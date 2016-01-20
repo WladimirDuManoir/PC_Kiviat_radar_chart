@@ -26,6 +26,11 @@ public class AxisComponent extends JComponent {
     private static final int DEFAULT_POINT_SIZE = 7;
     
     /**
+     * Default space needed to print label
+     */
+    private static final int DEFAULT_LABEL_SIZE = 10;
+    
+    /**
      * Orientation of the axis in radians
      */
     private final double angle;
@@ -56,8 +61,6 @@ public class AxisComponent extends JComponent {
      * @param name 
      */
     public AxisComponent(double angle, int min, int max, int value, String name) {
-        
-        // TODO : check that angle is in radians
         this.angle = angle;
         
         // TODO : find another way to get those values
@@ -76,27 +79,26 @@ public class AxisComponent extends JComponent {
         // Painting the axis
         double centerX = getWidth()/2;
         double centerY = getHeight()/2;
-        double totaldist = getWidth()/2;
+        double dist = (getWidth()/2) - DEFAULT_LABEL_SIZE ;
         line = new Line2D.Double(centerX, centerY, 
-                centerX + totaldist*Math.cos(angle),
-                centerY + totaldist*Math.sin(angle));
+                centerX + dist*Math.cos(angle),
+                centerY + dist*Math.sin(angle));
         g2.draw(line);
         
         // Painting the point representing the value
-        // TODO : gérer plus proprement la position : l'arrondi en int décale
-        // le point par rapport à l'axe
-        double dist =  totaldist*(value-min)/(max-min);
+        double distpoint =  dist*(value-min)/(max-min);
         point = new Ellipse2D.Double(
-                centerX + dist*Math.cos(angle),
-                centerY + dist*Math.sin(angle),
+                centerX + distpoint*Math.cos(angle) - DEFAULT_POINT_SIZE/2,
+                centerY + distpoint*Math.sin(angle) - DEFAULT_POINT_SIZE/2,
                 DEFAULT_POINT_SIZE, DEFAULT_POINT_SIZE);
-        g2.setColor(Color.red);
+        g2.setColor(Color.red); // TODO : set color properly
         g2.fill(point);
         
         // Painting the name of the axis
-        // TODO : gérer plus proprement la position : le texte sort du cadre
+        double totaldist = getWidth()/2;
+        g2.setColor(Color.BLACK);
         g2.drawString(name, 
-                (float) (centerX + totaldist*Math.cos(angle)), 
+                (float) (centerX - (g.getFontMetrics().stringWidth(name)/2) + totaldist*Math.cos(angle)), 
                 (float) (centerY + totaldist*Math.sin(angle)));
     }
     

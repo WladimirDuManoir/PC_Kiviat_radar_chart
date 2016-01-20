@@ -19,7 +19,13 @@ public class TestAxisComponent extends javax.swing.JFrame {
         
         AxisComponent axe = new AxisComponent(Math.toRadians(200), 0, 10, 3, "Test");
         axe.setBounds(50, 50, 200, 200);
+        AxisComponent axe2 = new AxisComponent(Math.toRadians(90), 0, 10, 3, "Test2");
+        axe2.setBounds(50, 50, 200, 200);
+        AxisComponent axe3 = new AxisComponent(Math.toRadians(130), 0, 10, 3, "Unlongtrucecrit");
+        axe3.setBounds(50, 50, 200, 200);
         this.add(axe);
+        this.add(axe2);
+        this.add(axe3);
     }
 
     /**
