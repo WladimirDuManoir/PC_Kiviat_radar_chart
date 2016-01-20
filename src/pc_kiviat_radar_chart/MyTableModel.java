@@ -20,14 +20,38 @@ class MyTableModel extends AbstractTableModel {
         "Vmax" };
   
     private Object[][] data; 
-    
-    public MyTableModel() {
-        data = new Object[][] {
+    private Object [][][] dataset = {
+        // (!) all data are not coherent ! 
+        new Object[][] {
         { "utilisation", 1, 0, 100},
         { "efficiency", 2, -100, 100},
         { "buty", 20, 0, 1000},
         { "quality", 50, 0, 100},
-        {null, null, null, null}};
+        {null, null, null, null}},
+        
+        new Object[][] {
+        { "sdgrg", 1, 0, 100},
+        { "efficiergency", 4, -50, 6},
+        { "buersgerty", 0, 0, 1000},
+        { "gdsfdfgfd", 40, 0, 10555550},
+        {null, null, null, null}},
+        
+        new Object[][] {
+        { "utilisation", 5555555, 0, 100},
+        { "efficiedfgdfgfdgdfgfdgfdgdfgdfgdfgdfgdfgfdncy", 2, -10, 100},
+        { "buty", 20, 0, 1000},
+        { "quality", 50, 0, 4},
+        {null, null, null, null}},
+        
+        new Object[][] {
+        { "utilisafdgdftion", 1, 0, 100},
+        { "efficiency", 2, -10000000, 100},
+        { "buty", 20, 0, 51000},
+        { "quagsdfgdfglity", 50, 0, 100},
+        {null, null, null, null}},
+    };
+    public MyTableModel() {
+        data = dataset [0];
     }
 
     @Override
