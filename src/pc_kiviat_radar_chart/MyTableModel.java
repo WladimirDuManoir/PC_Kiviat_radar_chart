@@ -5,6 +5,8 @@
  */
 package pc_kiviat_radar_chart;
 
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -21,7 +23,7 @@ class MyTableModel extends AbstractTableModel {
   
     private Object[][] data; 
     private Object [][][] dataset = {
-        // (!) all data are not coherent ! 
+        // (!) all data are not coherent 
         new Object[][] {
         { "utilisation", 1, 0, 100},
         { "efficiency", 2, -100, 100},
@@ -50,6 +52,7 @@ class MyTableModel extends AbstractTableModel {
         { "quagsdfgdfglity", 50, 0, 100},
         {null, null, null, null}},
     };
+    
     public MyTableModel() {
         data = dataset [0];
     }
@@ -85,8 +88,73 @@ class MyTableModel extends AbstractTableModel {
     
     @Override
     public void setValueAt(Object value, int row, int col) {
-        data[row][col] = value;
-        fireTableCellUpdated(row, col);
+        if (checkValue(value, row, col)){
+            data[row][col] = value;
+            fireTableCellUpdated(row, col);
+        }
+    }
+    
+    /**
+     * Check Values for the table. 
+     * @param data is the value tested.
+     * @param row is the row in the table.
+     * @param column is column of the table.
+     * @return if the value valide to be inserted in the row, column cell.
+     */
+    private boolean checkValue(Object data, int row, int column) {
+            switch (column) {
+            case 0: // Name
+                break;
+            case 1: // Value
+               if (data instanceof Integer) {
+                   int value = (int) data; 
+                   if (getValueAt(row, column + 1) != null 
+                           && value >= (int)getValueAt(row, column + 1)
+                           && getValueAt(row, column + 2) != null 
+                           && value <= (int)getValueAt(row, column + 2)
+                           ) {
+                      return true;
+                   } else {
+                     System.err.println("Error : Value not in range. ");
+                   }
+                } else {
+                     System.err.println("Error : Value not an Integer. ");
+                   }
+                break;
+            case 2: // Vmin
+                // TODO Check if value is in rang XXX
+                if (data instanceof Integer) {
+                   int value = (int) data; 
+                   
+                   if (getValueAt(row, column + 1) != null 
+                           && value <= (int)getValueAt(row, column + 1)) {
+                       return true;
+                   } else {
+                     System.err.println("Error : Value not in range. ");
+                   }
+                } else {
+                     System.err.println("Error : Value not an Integer. ");
+                   }
+                break;
+            case 3 : // Vmax 
+                // TODO Check if value is in rang 
+                if (data instanceof Integer) {
+                   int value = (int) data; 
+                   if (getValueAt(row, column - 1) != null 
+                           &&value <= (int)getValueAt(row, column - 1)) {
+                       return true;
+                   } else {
+                     System.err.println("Error : Value not in range. ");
+                   }
+                } else {
+                     System.err.println("Error : Value not an Integer. ");
+                   }
+                break;
+            default : 
+                System.err.println("Error : in the colmum number. ");
+                break;
+        }  
+        return false;
     }
 }
 
