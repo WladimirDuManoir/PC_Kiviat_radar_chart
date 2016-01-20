@@ -15,7 +15,13 @@ public class Main extends javax.swing.JFrame {
      * Creates new form Main
      */
     public Main() {
-        initComponents();
+      initComponents();
+      myInit();
+    }
+    
+    private void myInit() {
+        // FIXME delete default init 
+        jTable1.setModel(new MyTableModel());
     }
 
     /**
