@@ -5,6 +5,7 @@
  */
 package pc_kiviat_radar_chart.axiscomponent;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -103,14 +104,16 @@ public class AxisComponent extends JComponent {
 
         @Override
         public void mousePressed(MouseEvent e) {
-            pressed = true;
-            repaint();
+            if(cursorContains(e.getX(), e.getY())) {
+                pressed = true;
+                repaint();
+            }
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            pressed = false;
-            repaint();
+                pressed = false;
+                repaint();
         }
 
         @Override
@@ -166,6 +169,8 @@ public class AxisComponent extends JComponent {
         line = new Line2D.Double(centerX, centerY, 
                 centerX + dist*Math.cos(angle),
                 centerY + dist*Math.sin(angle));
+        g2.setStroke(new BasicStroke(2));
+        g2.setColor(Color.BLACK);
         g2.draw(line);
         
         // Painting the point representing the value
@@ -206,6 +211,17 @@ public class AxisComponent extends JComponent {
 
     @Override
     public boolean contains(int x, int y) {
+        return point != null && line != null
+                && (point.contains(x, y) || line.contains(x, y));
+    }
+    
+    /**
+     * Checks wether the point is on the cursor or not
+     * @param x
+     * @param y
+     * @return boolean
+     */
+    public boolean cursorContains(int x, int y) {
         return point != null && point.contains(x, y);
     }
     
