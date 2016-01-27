@@ -23,9 +23,19 @@ public class RadarChartComponant extends JComponent {
     
     public RadarChartComponant (MyTableModel data) {
         setPreferredSize(new Dimension(20000, 20000));
-        Double angle = Math.toRadians(360)/data.getRowCount();
-        int real = 0;
+        int dataRealSize = 0;
+         
         for (int i = 0; i < data.getRowCount() ; i++) {
+            if (data.getValueAt(i,0) != null
+                    && data.getValueAt(i,1) != null
+                    && data.getValueAt(i,2) != null
+                    && data.getValueAt(i,3) != null) {
+                dataRealSize++;
+            }
+        }
+        Double angle = dataRealSize == 0 ? 0 :  Math.toRadians(360)/dataRealSize;
+        int real = 0;
+        for (int i = 0; i < dataRealSize ; i++) {
             if (data.getValueAt(i,0) != null
                     && data.getValueAt(i,1) != null
                     && data.getValueAt(i,2) != null
