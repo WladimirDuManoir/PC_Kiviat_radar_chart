@@ -21,8 +21,11 @@ public class Main extends javax.swing.JFrame {
     
     private void myInit() {
         // FIXME delete default init 
-        jTable1.setModel(new MyTableModel());
+        MyTableModel data = new MyTableModel();
+        jTable1.setModel(data);
         jTable1.getTableHeader().setReorderingAllowed(false);
+        RadarChartComponant radar = new RadarChartComponant(data);
+        jPanel1.add(radar);
     }
 
     /**
@@ -56,6 +59,8 @@ public class Main extends javax.swing.JFrame {
             }
         ));
         jScrollPane1.setViewportView(jTable1);
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
