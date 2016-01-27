@@ -17,11 +17,11 @@ import pc_kiviat_radar_chart.axiscomponent.AxisComponent;
  * radar chart representation of a table.
  * @author rooty
  */
-public class RadarChartComponant extends JComponent {
+public class RadarChartComponent extends JComponent {
     
     private ArrayList<AxisComponent> axes = new ArrayList<AxisComponent>();
     
-    public RadarChartComponant (MyTableModel data) {
+    public RadarChartComponent (MyTableModel data) {
         setPreferredSize(new Dimension(20000, 20000));
         int dataRealSize = 0;
          

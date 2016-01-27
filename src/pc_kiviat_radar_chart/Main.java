@@ -24,7 +24,7 @@ public class Main extends javax.swing.JFrame {
         MyTableModel data = new MyTableModel();
         jTable1.setModel(data);
         jTable1.getTableHeader().setReorderingAllowed(false);
-        RadarChartComponant radar = new RadarChartComponant(data);
+        RadarChartComponent radar = new RadarChartComponent(data);
         jPanel1.add(radar);
     }
 

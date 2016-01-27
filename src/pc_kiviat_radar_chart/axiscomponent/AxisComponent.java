@@ -273,6 +273,7 @@ public class AxisComponent extends JComponent {
         double dist = (getWidth()/2) - DEFAULT_LABEL_SIZE;
         
         // FIXME : The cos can be equal to 0, and then this doesn't work !
+        // TODO : si c'est proche de 0, ne pas faire la division
         // value = (max-min)*(x-x1)/(x2-x1)
         int value = (int) ((max-min)*(coordinates.x - centerX)/(dist*Math.cos(angle)));
         
