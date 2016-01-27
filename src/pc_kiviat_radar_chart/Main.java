@@ -22,6 +22,7 @@ public class Main extends javax.swing.JFrame {
     private void myInit() {
         // FIXME delete default init 
         jTable1.setModel(new MyTableModel());
+        jTable1.getTableHeader().setReorderingAllowed(false);
     }
 
     /**

@@ -55,6 +55,7 @@ class MyTableModel extends AbstractTableModel {
     
     public MyTableModel() {
         data = dataset [0];
+        
     }
 
     @Override
@@ -122,12 +123,14 @@ class MyTableModel extends AbstractTableModel {
                    }
                 break;
             case 2: // Vmin
-                // TODO Check if value is in rang XXX
                 if (data instanceof Integer) {
                    int value = (int) data; 
-                   
                    if (getValueAt(row, column + 1) != null 
                            && value <= (int)getValueAt(row, column + 1)) {
+                       if ( value > (int)getValueAt(row, column - 1)) {
+                           // Value in tab is no more valide (set to minimum).
+                           setValueAt(value, row, column - 1);
+                       }
                        return true;
                    } else {
                      System.err.println("Error : Value not in range. ");
@@ -137,11 +140,14 @@ class MyTableModel extends AbstractTableModel {
                    }
                 break;
             case 3 : // Vmax 
-                // TODO Check if value is in rang 
                 if (data instanceof Integer) {
                    int value = (int) data; 
                    if (getValueAt(row, column - 1) != null 
-                           &&value <= (int)getValueAt(row, column - 1)) {
+                           && value >= (int)getValueAt(row, column - 1)) {
+                       if ( value < (int)getValueAt(row, column - 2)) {
+                           // Value in tab is no more valide (set to maximum). 
+                           setValueAt(value, row, column - 2);
+                       }
                        return true;
                    } else {
                      System.err.println("Error : Value not in range. ");
