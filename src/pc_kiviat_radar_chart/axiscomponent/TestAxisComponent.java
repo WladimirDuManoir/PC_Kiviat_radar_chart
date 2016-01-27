@@ -21,9 +21,9 @@ public class TestAxisComponent extends javax.swing.JFrame {
         
         AxisComponent axe = new AxisComponent(Math.toRadians(200), new MyTableModel(), 0);
         axe.setBounds(50, 50, 200, 200);
-        AxisComponent axe2 = new AxisComponent(Math.toRadians(90), new MyTableModel(), 0);
+        AxisComponent axe2 = new AxisComponent(Math.toRadians(90), new MyTableModel(), 1);
         axe2.setBounds(50, 50, 200, 200);
-        AxisComponent axe3 = new AxisComponent(Math.toRadians(130), new MyTableModel(), 0);
+        AxisComponent axe3 = new AxisComponent(Math.toRadians(130), new MyTableModel(), 2);
         axe3.setBounds(50, 50, 200, 200);
         this.add(axe);
         this.add(axe2);

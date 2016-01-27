@@ -11,8 +11,10 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 import javax.swing.JComponent;
 import javax.swing.table.AbstractTableModel;
 
@@ -27,6 +29,11 @@ public class AxisComponent extends JComponent {
      * Default point size for the slider
      */
     private static final int DEFAULT_POINT_SIZE = 7;
+    
+    /**
+     * Hover point size for the slider
+     */
+    private static final int PRESSED_POINT_SIZE = 12;
     
     /**
      * Default space needed to print label
@@ -58,6 +65,15 @@ public class AxisComponent extends JComponent {
      */
     private final int rowIndex;
 
+    /**
+     * Boolean indicating if the mouse is hovering on the cursor
+     */
+    private boolean hover = false;
+    
+    /**
+     * Boolean indicating if we pressed the cursor
+     */
+    private boolean pressed = false;
     
     /**
      * Allows to create an axis component with given values
@@ -71,42 +87,65 @@ public class AxisComponent extends JComponent {
         this.rowIndex = rowIndex;
         
         this.addMouseListener(new AxisComponentMouseListener());
+        this.addMouseMotionListener(new AxisComponentMouseMotionListener());
     }
 
     /**
      * Inner class to implement MouseListener to detect and move cursor
      */
-    private static class AxisComponentMouseListener implements MouseListener {
+    private class AxisComponentMouseListener implements MouseListener {
 
         public AxisComponentMouseListener() {
         }
 
         @Override
-        public void mouseClicked(MouseEvent e) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
+        public void mouseClicked(MouseEvent e) { }
 
         @Override
         public void mousePressed(MouseEvent e) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            pressed = true;
+            repaint();
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            pressed = false;
+            repaint();
         }
 
         @Override
         public void mouseEntered(MouseEvent e) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            hover = true;
+            repaint();
         }
 
         @Override
         public void mouseExited(MouseEvent e) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            hover = false;
+            repaint();
         }
     }
     
+    /**
+     *  Inner class to implement MouseMotionListener to detect and move cursor
+     */
+    private class AxisComponentMouseMotionListener implements MouseMotionListener {
+
+        public AxisComponentMouseMotionListener() {
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            
+            Point2D.Double pointOnAxis = approximatePoint(e.getX(), e.getY());
+            int value = pointToValue(pointOnAxis);
+            model.setValueAt(value, rowIndex, 1);
+            repaint();
+        }
+
+        @Override
+        public void mouseMoved(MouseEvent e) { }
+    }
     
     @Override
     public void paint(Graphics g) {
@@ -131,11 +170,22 @@ public class AxisComponent extends JComponent {
         
         // Painting the point representing the value
         double distpoint =  dist*(value-min)/(max-min);
-        point = new Ellipse2D.Double(
-                centerX + distpoint*Math.cos(angle) - DEFAULT_POINT_SIZE/2,
-                centerY + distpoint*Math.sin(angle) - DEFAULT_POINT_SIZE/2,
-                DEFAULT_POINT_SIZE, DEFAULT_POINT_SIZE);
-        g2.setColor(Color.red); // TODO : set color properly
+        if(pressed) {
+            point = new Ellipse2D.Double(
+                    valueToPoint(value).x, valueToPoint(value).y,
+                    PRESSED_POINT_SIZE, PRESSED_POINT_SIZE);  
+        } else {
+            point = new Ellipse2D.Double(
+                    valueToPoint(value).x, valueToPoint(value).y,
+                    DEFAULT_POINT_SIZE, DEFAULT_POINT_SIZE);  
+        }
+        
+        if(hover) {
+            g2.setColor(Color.RED); // TODO : set color properly with a constant
+        } else {
+            g2.setColor(Color.BLACK);
+        }
+        
         g2.fill(point);
         
         // Painting the name of the axis
@@ -144,6 +194,19 @@ public class AxisComponent extends JComponent {
         g2.drawString(name, 
                 (float) (centerX - (g.getFontMetrics().stringWidth(name)/2) + totaldist*Math.cos(angle)), 
                 (float) (centerY + totaldist*Math.sin(angle)));
+        
+        // Painting the value if hovered
+        if(hover) {
+            g2.setColor(Color.BLACK);
+            g2.drawString("Value : " + value, 
+                    getValueCoordinates().x, 
+                    getValueCoordinates().y);
+        }
+    }
+
+    @Override
+    public boolean contains(int x, int y) {
+        return point != null && point.contains(x, y);
     }
     
     /**
@@ -152,8 +215,81 @@ public class AxisComponent extends JComponent {
      */
     public Point getValueCoordinates() {
         return new Point((int) point.getX(), (int) point.getY());
+    }  
+    
+    /**
+     * Gets the value of the axis and returns the corresponding point
+     * @param value
+     * @return a point containing the coordinates
+     */
+    private Point2D.Double valueToPoint(int value) {
+        int centerX = getWidth()/2;
+        int centerY = getHeight()/2;
+        int min = (int) model.getValueAt(rowIndex, 2);
+        int max = (int) model.getValueAt(rowIndex, 3); 
+        int distpoint = ((getWidth()/2) - DEFAULT_LABEL_SIZE)*(value-min)/(max-min);
+        
+        
+        Point2D.Double retour;
+        
+        if(pressed) {
+            retour = new Point2D.Double(
+                centerX + distpoint*Math.cos(angle) - PRESSED_POINT_SIZE/2,
+                centerY + distpoint*Math.sin(angle) - PRESSED_POINT_SIZE/2);  
+        } else {
+            retour = new Point2D.Double(
+                centerX + distpoint*Math.cos(angle) - DEFAULT_POINT_SIZE/2,
+                centerY + distpoint*Math.sin(angle) - DEFAULT_POINT_SIZE/2);  
+        }
+        
+        return retour;
     }
     
+    /**
+     * Gets a point and returns the corresponding value of the axis
+     * @param coordinates
+     * @return 
+     */
+    private int pointToValue(Point2D.Double coordinates) {
+        int centerX = getWidth()/2;
+        int min = (int) model.getValueAt(rowIndex, 2);
+        int max = (int) model.getValueAt(rowIndex, 3);
+        double dist = (getWidth()/2) - DEFAULT_LABEL_SIZE;
+        
+        // FIXME : The cos can be equal to 0, and then this doesn't work !
+        // value = (max-min)*(x-x1)/(x2-x1)
+        int value = (int) ((max-min)*(coordinates.x - centerX)/(dist*Math.cos(angle)));
+        
+        return value;
+    }
     
-    
+    /**
+     * Given the coordinates x and y, returns the most close coordinates on the axis
+     * @param x
+     * @param y
+     * @return 
+     */
+    private Point2D.Double approximatePoint(int x, int y) {
+        double xDelta = line.getX2() - line.getX1();
+        double yDelta = line.getY2() - line.getY1();
+
+        if ((xDelta == 0) && (yDelta == 0)) {
+          throw new IllegalArgumentException("Segment start equals segment end");
+        }
+        
+
+        double u = ((x - line.getX1()) * xDelta + (y - line.getY1()) * yDelta)
+                / (xDelta * xDelta + yDelta * yDelta);
+        Point2D.Double closestPoint;
+
+        if (u > 1) {
+          closestPoint = new Point2D.Double(line.getX2(), line.getY2());
+        } else {
+          closestPoint = new Point2D.Double(
+                  Math.round(line.getX1() + u * xDelta),
+                  Math.round(line.getY1() + u * yDelta));
+        }
+
+        return closestPoint;
+    }
 }
