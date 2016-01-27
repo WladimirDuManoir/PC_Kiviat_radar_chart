@@ -9,9 +9,13 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import javax.swing.JComponent;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
 
 /**
  * Cette classe est un composant slider orienté sur un angle précisé
@@ -28,7 +32,7 @@ public class AxisComponent extends JComponent {
     /**
      * Default space needed to print label
      */
-    private static final int DEFAULT_LABEL_SIZE = 10;
+    private static final int DEFAULT_LABEL_SIZE = 15;
     
     /**
      * Orientation of the axis in radians
@@ -45,37 +49,78 @@ public class AxisComponent extends JComponent {
      */
     private Line2D.Double line;
     
-    // TODO : These values are stoked here temporarly 
-    private final int min;
-    private final int max; 
-    private final int value;
-    private final String name;
+    /**
+     * The model containing the values of the axis
+     */
+    private final AbstractTableModel model;
+    
+    /**
+     * The index of the row of the model for this axis
+     */
+    private final int rowIndex;
 
     
     /**
      * Allows to create an axis component with given values
      * @param angle
-     * @param min
-     * @param max
-     * @param value 
-     * @param name 
+     * @param model
+     * @param rowIndex
      */
-    public AxisComponent(double angle, int min, int max, int value, String name) {
+    public AxisComponent(double angle, AbstractTableModel model, int rowIndex) {
         this.angle = angle;
+        this.model = model;
+        this.rowIndex = rowIndex;
         
-        // TODO : find another way to get those values
-        this.min = min;
-        this.max = max;
-        this.value = value;
-        this.name = name;
+        this.addMouseListener(new AxisComponentMouseListener());
     }
 
+    /**
+     * Inner class to implement MouseListener to detect and move cursor
+     */
+    private static class AxisComponentMouseListener implements MouseListener {
+
+        public AxisComponentMouseListener() {
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+    }
+    
+    
     @Override
     public void paint(Graphics g) {
         super.paint(g);
         
         Graphics2D g2 = (Graphics2D) g;
         
+        // Getting values from the model
+        String name = (String) model.getValueAt(rowIndex, 0);
+        int value = (int) model.getValueAt(rowIndex, 1);
+        int min = (int) model.getValueAt(rowIndex, 2);
+        int max = (int) model.getValueAt(rowIndex, 3); 
+                
         // Painting the axis
         double centerX = getWidth()/2;
         double centerY = getHeight()/2;

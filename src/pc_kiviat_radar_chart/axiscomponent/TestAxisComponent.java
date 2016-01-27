@@ -5,8 +5,10 @@
  */
 package pc_kiviat_radar_chart.axiscomponent;
 
+import pc_kiviat_radar_chart.MyTableModel;
+
 /**
- *
+ * Classe de test du composant Axis
  * @author bouillys
  */
 public class TestAxisComponent extends javax.swing.JFrame {
@@ -17,11 +19,11 @@ public class TestAxisComponent extends javax.swing.JFrame {
     public TestAxisComponent() {
         initComponents();
         
-        AxisComponent axe = new AxisComponent(Math.toRadians(200), 0, 10, 3, "Test");
+        AxisComponent axe = new AxisComponent(Math.toRadians(200), new MyTableModel(), 0);
         axe.setBounds(50, 50, 200, 200);
-        AxisComponent axe2 = new AxisComponent(Math.toRadians(90), 0, 10, 3, "Test2");
+        AxisComponent axe2 = new AxisComponent(Math.toRadians(90), new MyTableModel(), 0);
         axe2.setBounds(50, 50, 200, 200);
-        AxisComponent axe3 = new AxisComponent(Math.toRadians(130), 0, 10, 3, "Unlongtrucecrit");
+        AxisComponent axe3 = new AxisComponent(Math.toRadians(130), new MyTableModel(), 0);
         axe3.setBounds(50, 50, 200, 200);
         this.add(axe);
         this.add(axe2);
@@ -37,17 +39,25 @@ public class TestAxisComponent extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(269, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(274, Short.MAX_VALUE))
         );
 
         pack();
@@ -90,5 +100,6 @@ public class TestAxisComponent extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }
