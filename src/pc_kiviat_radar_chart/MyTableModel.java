@@ -5,8 +5,6 @@
  */
 package pc_kiviat_radar_chart;
 
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -14,15 +12,15 @@ import javax.swing.table.AbstractTableModel;
  * @author rooty
  * Model for our Table representing the differents criteria. 
  */
-class MyTableModel extends AbstractTableModel {
+public class MyTableModel extends AbstractTableModel {
 
     private final String[] columnNames = { "Name",
         "Value",
         "Vmin",
         "Vmax" };
   
-    private Object[][] data; 
-    private Object [][][] dataset = {
+    private final Object[][] data; 
+    private final Object [][][] dataset = {
         // (!) all data are not coherent 
         new Object[][] {
         { "utilisation", 1, 0, 100},
