@@ -5,11 +5,14 @@
  */
 package pc_kiviat_radar_chart;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.RenderingHints;
 import java.util.ArrayList;
-import java.util.Collection;
 import javax.swing.JComponent;
-import pc_kiviat_radar_chart.MyTableModel;
 import pc_kiviat_radar_chart.axiscomponent.AxisComponent;
 
 /**
@@ -17,9 +20,9 @@ import pc_kiviat_radar_chart.axiscomponent.AxisComponent;
  * radar chart representation of a table.
  * @author rooty
  */
-public class RadarChartComponent extends JComponent {
+public final class RadarChartComponent extends JComponent {
     
-    private ArrayList<AxisComponent> axes = new ArrayList<AxisComponent>();
+    private final ArrayList<AxisComponent> axes = new ArrayList<>();
     
     public RadarChartComponent (MyTableModel data) {
         setPreferredSize(new Dimension(20000, 20000));
@@ -63,10 +66,30 @@ public class RadarChartComponent extends JComponent {
     @Override
     public void setBounds (int x, int y, int width, int height) {
          super.setBounds(x, y, width, height);
-         for (int i = 0; i < axes.size(); i++) {
-             axes.get(i).setBounds(this.getX(), this.getY(), 
-                        this.getWidth(), this.getHeight());
-        }
+         axes.stream().forEach((axe) -> {
+             axe.setBounds(0, 0, width, height);
+        });
     }
+
+    @Override
+    public void paint(Graphics g) {
     
+        super.paint(g); //To change body of generated methods, choose Tools | Templates.
+        Polygon lines = new Polygon();
+        
+        for(AxisComponent axis : axes) {
+            lines.addPoint(axis.getValueCoordinates().x, axis.getValueCoordinates().y);
+        }
+        
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        
+        g2.setColor(Color.BLACK);
+        g2.draw(lines);
+        
+        Color light_orange = new Color(230, 162, 140);
+        g2.setColor(light_orange);
+        g2.fill(lines);
+        
+    }
 }

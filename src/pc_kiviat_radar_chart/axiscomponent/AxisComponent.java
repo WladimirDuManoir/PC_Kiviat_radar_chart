@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -29,12 +30,7 @@ public class AxisComponent extends JComponent {
     /**
      * Default point size for the slider
      */
-    private static final int DEFAULT_POINT_SIZE = 7;
-    
-    /**
-     * Hover point size for the slider
-     */
-    private static final int PRESSED_POINT_SIZE = 12;
+    private static final int DEFAULT_POINT_SIZE = 10;
     
     /**
      * Default space needed to print label
@@ -72,11 +68,6 @@ public class AxisComponent extends JComponent {
     private boolean hover = false;
     
     /**
-     * Boolean indicating if we pressed the cursor
-     */
-    private boolean pressed = false;
-    
-    /**
      * Allows to create an axis component with given values
      * @param angle
      * @param model
@@ -103,18 +94,10 @@ public class AxisComponent extends JComponent {
         public void mouseClicked(MouseEvent e) { }
 
         @Override
-        public void mousePressed(MouseEvent e) {
-            if(cursorContains(e.getX(), e.getY())) {
-                pressed = true;
-                repaint();
-            }
-        }
+        public void mousePressed(MouseEvent e) { }
 
         @Override
-        public void mouseReleased(MouseEvent e) {
-                pressed = false;
-                repaint();
-        }
+        public void mouseReleased(MouseEvent e) { }
 
         @Override
         public void mouseEntered(MouseEvent e) {
@@ -134,8 +117,7 @@ public class AxisComponent extends JComponent {
      */
     private class AxisComponentMouseMotionListener implements MouseMotionListener {
 
-        public AxisComponentMouseMotionListener() {
-        }
+        public AxisComponentMouseMotionListener() { }
 
         @Override
         public void mouseDragged(MouseEvent e) {
@@ -169,21 +151,17 @@ public class AxisComponent extends JComponent {
         line = new Line2D.Double(centerX, centerY, 
                 centerX + dist*Math.cos(angle),
                 centerY + dist*Math.sin(angle));
-        g2.setStroke(new BasicStroke(2));
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setStroke(new BasicStroke(1));
         g2.setColor(Color.BLACK);
         g2.draw(line);
         
         // Painting the point representing the value
         double distpoint =  dist*(value-min)/(max-min);
-        if(pressed) {
-            point = new Ellipse2D.Double(
-                    valueToPoint(value).x, valueToPoint(value).y,
-                    PRESSED_POINT_SIZE, PRESSED_POINT_SIZE);  
-        } else {
-            point = new Ellipse2D.Double(
-                    valueToPoint(value).x, valueToPoint(value).y,
-                    DEFAULT_POINT_SIZE, DEFAULT_POINT_SIZE);  
-        }
+        point = new Ellipse2D.Double(
+                    getValueCoordinates().x, 
+                    getValueCoordinates().y,
+                    DEFAULT_POINT_SIZE, DEFAULT_POINT_SIZE); 
         
         if(hover) {
             g2.setColor(Color.RED); // TODO : set color properly with a constant
@@ -230,7 +208,9 @@ public class AxisComponent extends JComponent {
      * @return a point
      */
     public Point getValueCoordinates() {
-        return new Point((int) point.getX(), (int) point.getY());
+        int value = (int) model.getValueAt(rowIndex, 1);
+        return new Point((int) valueToPoint(value).x - DEFAULT_POINT_SIZE/2,
+                (int) valueToPoint(value).y - DEFAULT_POINT_SIZE/2);
     }  
     
     /**
@@ -245,18 +225,9 @@ public class AxisComponent extends JComponent {
         int max = (int) model.getValueAt(rowIndex, 3); 
         int distpoint = ((getWidth()/2) - DEFAULT_LABEL_SIZE)*(value-min)/(max-min);
         
-        
-        Point2D.Double retour;
-        
-        if(pressed) {
-            retour = new Point2D.Double(
-                centerX + distpoint*Math.cos(angle) - PRESSED_POINT_SIZE/2,
-                centerY + distpoint*Math.sin(angle) - PRESSED_POINT_SIZE/2);  
-        } else {
-            retour = new Point2D.Double(
-                centerX + distpoint*Math.cos(angle) - DEFAULT_POINT_SIZE/2,
-                centerY + distpoint*Math.sin(angle) - DEFAULT_POINT_SIZE/2);  
-        }
+        Point2D.Double retour = new Point2D.Double(
+            centerX + distpoint*Math.cos(angle),
+            centerY + distpoint*Math.sin(angle));  
         
         return retour;
     }
@@ -272,10 +243,13 @@ public class AxisComponent extends JComponent {
         int max = (int) model.getValueAt(rowIndex, 3);
         double dist = (getWidth()/2) - DEFAULT_LABEL_SIZE;
         
-        // FIXME : The cos can be equal to 0, and then this doesn't work !
-        // TODO : si c'est proche de 0, ne pas faire la division
         // value = (max-min)*(x-x1)/(x2-x1)
-        int value = (int) ((max-min)*(coordinates.x - centerX)/(dist*Math.cos(angle)));
+        int value;
+        if(Math.cos(angle) == 0) {
+            value = (int) ((max-min)*(coordinates.x - centerX));
+        } else {
+            value = (int) ((max-min)*(coordinates.x - centerX)/(dist*Math.cos(angle)));
+        }
         
         return value;
     }
