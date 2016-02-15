@@ -5,6 +5,8 @@
  */
 package pc_kiviat_radar_chart;
 
+import java.util.Vector;
+import javax.swing.table.DefaultTableModel;
 import pc_kiviat_radar_chart.kiviatcomponent.KiviatComponent;
 import pc_kiviat_radar_chart.models.MyTableModel;
 
@@ -15,6 +17,12 @@ import pc_kiviat_radar_chart.models.MyTableModel;
 public class Main extends javax.swing.JFrame {
 
     /**
+     * 
+     */
+    private DefaultTableModel model = new MyTableModel();
+    
+    
+    /**
      * Creates new form Main
      */
     public Main() {
@@ -24,10 +32,14 @@ public class Main extends javax.swing.JFrame {
     
     private void myInit() {
         // FIXME delete default init 
-        MyTableModel data = new MyTableModel();
-        jTableKiviat.setModel(data);
+        
+        // Setting the table
+        jTableKiviat.setModel(model);
         jTableKiviat.getTableHeader().setReorderingAllowed(false);
-        KiviatComponent radar = new KiviatComponent(data);
+        
+        // Setting the Kiviat
+        KiviatComponent radar = new KiviatComponent(model);
+        radar.setBounds(jPanelKiviat.getBounds());
         jPanelKiviat.add(radar);
     }
 
@@ -44,6 +56,8 @@ public class Main extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableKiviat = new javax.swing.JTable();
         jPanelKiviat = new javax.swing.JPanel();
+        jButtonAddRow = new javax.swing.JButton();
+        jButtonRemoveRow = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -76,6 +90,16 @@ public class Main extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
+        jButtonAddRow.setText("Add a row");
+        jButtonAddRow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAddRowActionPerformed(evt);
+            }
+        });
+
+        jButtonRemoveRow.setText("Remove row");
+        jButtonRemoveRow.setEnabled(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -88,7 +112,11 @@ public class Main extends javax.swing.JFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 605, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabelKiviat)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButtonAddRow, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButtonRemoveRow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -100,12 +128,27 @@ public class Main extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabelKiviat)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 611, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 569, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButtonRemoveRow, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
+                            .addComponent(jButtonAddRow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButtonAddRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddRowActionPerformed
+        Object[] defaultRow = new Object[]{"Default", 5, 0, 10};
+        Vector row = new Vector();
+        row.add("Default");
+        row.add(5);
+        row.add(0);
+        row.add(10);
+        
+        this.model.addRow(row);
+    }//GEN-LAST:event_jButtonAddRowActionPerformed
 
     /**
      * @param args the command line arguments
@@ -143,6 +186,8 @@ public class Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonAddRow;
+    private javax.swing.JButton jButtonRemoveRow;
     private javax.swing.JLabel jLabelKiviat;
     private javax.swing.JPanel jPanelKiviat;
     private javax.swing.JScrollPane jScrollPane1;

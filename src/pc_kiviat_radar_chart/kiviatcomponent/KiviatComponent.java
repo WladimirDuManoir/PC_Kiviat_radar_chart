@@ -5,7 +5,6 @@
  */
 package pc_kiviat_radar_chart.kiviatcomponent;
 
-import pc_kiviat_radar_chart.models.MyTableModel;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -16,7 +15,7 @@ import java.util.ArrayList;
 import javax.swing.JComponent;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 import pc_kiviat_radar_chart.axiscomponent.AxisComponent;
 import pc_kiviat_radar_chart.axiscomponent.AxisEvent;
 import pc_kiviat_radar_chart.axiscomponent.AxisListener;
@@ -30,7 +29,7 @@ import pc_kiviat_radar_chart.axiscomponent.AxisListener;
 public final class KiviatComponent extends JComponent {
 
     private final ArrayList<AxisComponent> axes = new ArrayList<>();
-    private final AbstractTableModel model;
+    private final DefaultTableModel model;
 
     /**
      * The listener on the model events
@@ -46,7 +45,7 @@ public final class KiviatComponent extends JComponent {
      * 
      * @param data 
      */
-    public KiviatComponent(MyTableModel data) {
+    public KiviatComponent(DefaultTableModel data) {
         this.model = data;
         this.model.addTableModelListener(modelListener);
 
@@ -79,8 +78,6 @@ public final class KiviatComponent extends JComponent {
                 real++;
             }
         }
-
-        this.setBounds(0, 0, getPreferredSize().width, getPreferredSize().height);
     }
 
     @Override
@@ -92,7 +89,7 @@ public final class KiviatComponent extends JComponent {
     public void setBounds(int x, int y, int width, int height) {
         super.setBounds(x, y, width, height);
         axes.stream().forEach((axe) -> {
-            axe.setBounds(x, y, width, height);
+            axe.setBounds(0, 0, width, height);
         });
     }
 
@@ -142,7 +139,26 @@ public final class KiviatComponent extends JComponent {
         }
 
         private void tableRowInserted(TableModelEvent e) {
-            // TODO : insert the new axis in the list
+            // Adding the axis
+            for (int i = e.getFirstRow(); i <= e.getLastRow(); i++) {
+                AxisComponent newAxis = new AxisComponent(0,
+                        (String) model.getValueAt(i, 0),
+                        (int) model.getValueAt(i, 1),
+                        (int) model.getValueAt(i, 2),
+                        (int) model.getValueAt(i, 3));
+                
+                newAxis.addAxisListener(axisListener);
+                axes.add(newAxis);
+                
+                newAxis.setBounds(getBounds());
+                add(newAxis);
+            }
+            
+            // Updating angles
+            for(AxisComponent axis : axes) {
+                axis.setAngle(axes.indexOf(axis) * Math.toRadians(360) / axes.size());
+                axis.repaint();
+            }
         }
 
         /**

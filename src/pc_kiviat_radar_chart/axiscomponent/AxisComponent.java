@@ -61,7 +61,7 @@ public class AxisComponent extends JComponent {
     /**
      * Orientation of the axis in radians
      */
-    private final double angle;
+    private double angle;
         
     /**
      * The point on the axis
@@ -203,6 +203,13 @@ public class AxisComponent extends JComponent {
         }
     }
 
+    @Override
+    public void setBounds(int x, int y, int width, int height) {
+        // FIXME : décallage entre le point et la ligne
+        super.setBounds(0, 0, width, height); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
     // TODO : this is not working to detect if user is clicking on the axis
     @Override
     public boolean contains(int x, int y) {
@@ -229,6 +236,13 @@ public class AxisComponent extends JComponent {
                 (int) valueToPoint(value).y);
     }  
     
+    /**
+     * Sets the angle to specified value
+     * @param angle 
+     */
+    public void setAngle(double angle) {
+        this.angle = angle;
+    }
     
     /* **********************************************************
      *

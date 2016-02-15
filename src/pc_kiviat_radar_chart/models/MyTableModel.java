@@ -5,21 +5,20 @@
  */
 package pc_kiviat_radar_chart.models;
 
-import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author rooty Model for our Table representing the differents criteria.
  */
-public class MyTableModel extends AbstractTableModel {
+public class MyTableModel extends DefaultTableModel {
 
-    private final String[] columnNames = {"Name",
+    private static final String[] columnNames = {"Name",
         "Value",
         "Vmin",
         "Vmax"};
 
-    private final Object[][] data;
-    private final Object[][][] dataset = {
+    private static final Object[][][] dataset = {
         // (!) all data are not coherent 
         new Object[][]{
             {"utilisation", 1, 0, 100},
@@ -56,24 +55,9 @@ public class MyTableModel extends AbstractTableModel {
             {"buty", 20, 0, 51000},
             {"quagsdfgdfglity", 50, 0, 100},
             {null, null, null, null}},};
-
+    
     public MyTableModel() {
-        data = dataset[1];
-    }
-
-    @Override
-    public int getRowCount() {
-        return data.length;
-    }
-
-    @Override
-    public int getColumnCount() {
-        return columnNames.length;
-    }
-
-    @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
-        return data[rowIndex][columnIndex];
+        super(dataset[1], columnNames);
     }
 
     @Override
@@ -94,7 +78,7 @@ public class MyTableModel extends AbstractTableModel {
     @Override
     public void setValueAt(Object value, int row, int col) {
         if (checkValue(value, row, col)) {
-            data[row][col] = value;
+            super.setValueAt(value, row, col);
             fireTableCellUpdated(row, col);
         }
     }
