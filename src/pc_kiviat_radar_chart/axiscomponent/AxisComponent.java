@@ -18,7 +18,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import javax.swing.JComponent;
-import javax.swing.table.AbstractTableModel;
+import javax.swing.event.EventListenerList;
 
 /**
  * Cette classe est un composant slider orienté sur un angle précisé
@@ -51,16 +51,6 @@ public class AxisComponent extends JComponent {
      * The line of the axis
      */
     private Line2D.Double line;
-    
-    /**
-     * The model containing the values of the axis
-     */
-    private final AbstractTableModel model;
-    
-    /**
-     * The index of the row of the model for this axis
-     */
-    private final int rowIndex;
 
     /**
      * Boolean indicating if the mouse is hovering on the cursor
@@ -68,15 +58,71 @@ public class AxisComponent extends JComponent {
     private boolean hover = false;
     
     /**
+     * Values of the model
+     */
+    private String name;
+    private int value;
+    private int min;
+    private int max; 
+
+    public String getAxisName() {
+        return name;
+    }
+
+    public void setAxisName(String name) {
+        this.name = name;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        System.out.println("Min : " + this.min + " Max : " + this.max + " Value : " + value);
+        if(value < this.min) {
+            System.out.println("Too low !");
+            value = this.min;
+        }
+        
+        if(value > this.max) {
+            System.out.println("Too high !");
+            value = this.max;
+        }
+        
+        this.value = value;
+    }
+
+    public int getMin() {
+        return min;
+    }
+
+    public void setMin(int min) {
+        this.min = min;
+    }
+
+    public int getMax() {
+        return max;
+    }
+
+    public void setMax(int max) {
+        this.max = max;
+    }
+
+    
+    /**
      * Allows to create an axis component with given values
      * @param angle
-     * @param model
-     * @param rowIndex
+     * @param name
+     * @param value
+     * @param min
+     * @param max
      */
-    public AxisComponent(double angle, AbstractTableModel model, int rowIndex) {
+    public AxisComponent(double angle, String name, int value, int min, int max) {
         this.angle = angle;
-        this.model = model;
-        this.rowIndex = rowIndex;
+        this.name = name;
+        this.value = value;
+        this.min = min;
+        this.max = max;
         
         this.addMouseListener(new AxisComponentMouseListener());
         this.addMouseMotionListener(new AxisComponentMouseMotionListener());
@@ -122,10 +168,15 @@ public class AxisComponent extends JComponent {
         @Override
         public void mouseDragged(MouseEvent e) {
             
-            Point2D.Double pointOnAxis = approximatePoint(e.getX(), e.getY());
-            int value = pointToValue(pointOnAxis);
-            model.setValueAt(value, rowIndex, 1);
+            // Setting the new value
+            int value = pointToValue(approximatePoint(e.getX(), e.getY()));
+            
+            setValue(value);
             repaint();
+            
+            // Telling the listeners that value changed
+            AxisEvent event = new AxisEvent(this, AxisComponent.this, AxisEvent.VALUE_CHANGED);
+            fireAxisChanged(event);
         }
 
         @Override
@@ -137,13 +188,7 @@ public class AxisComponent extends JComponent {
         super.paint(g);
         
         Graphics2D g2 = (Graphics2D) g;
-        
-        // Getting values from the model
-        String name = (String) model.getValueAt(rowIndex, 0);
-        int value = (int) model.getValueAt(rowIndex, 1);
-        int min = (int) model.getValueAt(rowIndex, 2);
-        int max = (int) model.getValueAt(rowIndex, 3); 
-                
+                        
         // Painting the axis
         double centerX = getWidth()/2;
         double centerY = getHeight()/2;
@@ -187,6 +232,7 @@ public class AxisComponent extends JComponent {
         }
     }
 
+    // TODO : this is not working to detect if user is clicking on the axis
     @Override
     public boolean contains(int x, int y) {
         return point != null && line != null
@@ -208,7 +254,6 @@ public class AxisComponent extends JComponent {
      * @return a point
      */
     public Point getValueCoordinates() {
-        int value = (int) model.getValueAt(rowIndex, 1);
         return new Point((int) valueToPoint(value).x,
                 (int) valueToPoint(value).y);
     }  
@@ -221,8 +266,6 @@ public class AxisComponent extends JComponent {
     private Point2D.Double valueToPoint(int value) {
         int centerX = getWidth()/2;
         int centerY = getHeight()/2;
-        int min = (int) model.getValueAt(rowIndex, 2);
-        int max = (int) model.getValueAt(rowIndex, 3); 
         int distpoint = ((getWidth()/2) - DEFAULT_LABEL_SIZE)*(value-min)/(max-min);
         
         Point2D.Double retour = new Point2D.Double(
@@ -239,19 +282,17 @@ public class AxisComponent extends JComponent {
      */
     private int pointToValue(Point2D.Double coordinates) {
         int centerX = getWidth()/2;
-        int min = (int) model.getValueAt(rowIndex, 2);
-        int max = (int) model.getValueAt(rowIndex, 3);
         double dist = (getWidth()/2) - DEFAULT_LABEL_SIZE;
         
         // value = (max-min)*(x-x1)/(x2-x1)
-        int value;
+        int calculatedValue;
         if(Math.cos(angle) == 0) {
-            value = (int) ((max-min)*(coordinates.x - centerX));
+            calculatedValue = (int) ((max-min)*(coordinates.x - centerX));
         } else {
-            value = (int) ((max-min)*(coordinates.x - centerX)/(dist*Math.cos(angle)));
+            calculatedValue = (int) ((max-min)*(coordinates.x - centerX)/(dist*Math.cos(angle)));
         }
         
-        return value;
+        return calculatedValue;
     }
     
     /**
@@ -282,5 +323,36 @@ public class AxisComponent extends JComponent {
         }
 
         return closestPoint;
+    }
+    
+    /**
+     * List of listeners that listens to the changes on this axis
+     */
+    private final EventListenerList eventListenerList = new EventListenerList();
+
+    /**
+     * Adds a listener on this axis' changes
+     * @param listener 
+     */
+    public void addAxisListener(AxisListener listener) {
+        eventListenerList.add(AxisListener.class, listener);
+    }
+
+    /**
+     * Removes a listener on this axis
+     * @param listener 
+     */
+    public void removeAxisListener(AxisListener listener) {
+        eventListenerList.remove(AxisListener.class, listener);
+    }
+    
+    /**
+     * Tells all the listeners that this axis has changed
+     * @param event 
+     */
+    private void fireAxisChanged(AxisEvent event) {
+        for (AxisListener listener : eventListenerList.getListeners(AxisListener.class)) {
+            listener.axisChanged(event);
+        }
     }
 }
