@@ -30,7 +30,7 @@ import pc_kiviat_radar_chart.axiscomponent.AxisListener;
 public final class KiviatComponent extends JComponent {
 
     private final ArrayList<AxisComponent> axes = new ArrayList<>();
-    private AbstractTableModel model;
+    private final AbstractTableModel model;
 
     /**
      * The listener on the model events

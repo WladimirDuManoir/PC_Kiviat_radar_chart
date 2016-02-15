@@ -27,6 +27,13 @@ import javax.swing.event.EventListenerList;
  */
 public class AxisComponent extends JComponent {
     
+    
+    /* **********************************************************
+     *
+     *  Constants
+     *
+     * ***********************************************************/
+    // <editor-fold defaultstate="collapsed" desc="Constants">   
     /**
      * Default point size for the slider
      */
@@ -35,8 +42,22 @@ public class AxisComponent extends JComponent {
     /**
      * Default space needed to print label
      */
-    private static final int DEFAULT_LABEL_SIZE = 15;
+    private static final int DEFAULT_LABEL_SIZE = 25;
     
+    /**
+     * Default space needed in the center to see points better
+     */
+    private static final int DEFAULT_CENTER_SIZE = 20;
+    // </editor-fold>
+    
+    
+    
+    /* **********************************************************
+     *
+     *  Attributes
+     *
+     * ***********************************************************/
+    // <editor-fold defaultstate="collapsed" desc="Attributes">  
     /**
      * Orientation of the axis in radians
      */
@@ -56,58 +77,8 @@ public class AxisComponent extends JComponent {
      * Boolean indicating if the mouse is hovering on the cursor
      */
     private boolean hover = false;
+    // </editor-fold>
     
-    /**
-     * Values of the model
-     */
-    private String name;
-    private int value;
-    private int min;
-    private int max; 
-
-    public String getAxisName() {
-        return name;
-    }
-
-    public void setAxisName(String name) {
-        this.name = name;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public void setValue(int value) {
-        System.out.println("Min : " + this.min + " Max : " + this.max + " Value : " + value);
-        if(value < this.min) {
-            System.out.println("Too low !");
-            value = this.min;
-        }
-        
-        if(value > this.max) {
-            System.out.println("Too high !");
-            value = this.max;
-        }
-        
-        this.value = value;
-    }
-
-    public int getMin() {
-        return min;
-    }
-
-    public void setMin(int min) {
-        this.min = min;
-    }
-
-    public int getMax() {
-        return max;
-    }
-
-    public void setMax(int max) {
-        this.max = max;
-    }
-
     
     /**
      * Allows to create an axis component with given values
@@ -248,7 +219,7 @@ public class AxisComponent extends JComponent {
     public boolean cursorContains(int x, int y) {
         return point != null && point.contains(x, y);
     }
-    
+        
     /**
      * Returns the coordinates of the value on this axis
      * @return a point
@@ -258,6 +229,13 @@ public class AxisComponent extends JComponent {
                 (int) valueToPoint(value).y);
     }  
     
+    
+    /* **********************************************************
+     *
+     *  Specific methods to build the axis
+     *
+     * ***********************************************************/ 
+    // <editor-fold defaultstate="collapsed" desc="Building methods">
     /**
      * Gets the value of the axis and returns the corresponding point
      * @param value
@@ -325,6 +303,15 @@ public class AxisComponent extends JComponent {
         return closestPoint;
     }
     
+    // </editor-fold>
+    
+    
+    /* **********************************************************
+     *
+     *  Axis events listening and triggering
+     *
+     * ***********************************************************/ 
+    // <editor-fold defaultstate="collapsed" desc="Axis events">    
     /**
      * List of listeners that listens to the changes on this axis
      */
@@ -355,4 +342,114 @@ public class AxisComponent extends JComponent {
             listener.axisChanged(event);
         }
     }
+    // </editor-fold>
+    
+    
+    /* **********************************************************
+     *
+     *  Model of the Axis
+     *
+     * ***********************************************************/ 
+    // <editor-fold defaultstate="collapsed" desc="Model of the axis">     
+    /**
+     * Name of this axis
+     */
+    private String name;
+    
+    /**
+     * Value of this axis
+     */
+    private int value;
+    
+    /**
+     * Minimum value of this axis
+     */
+    private int min;
+    
+    /**
+     * Maximum value of this axis
+     */
+    private int max; 
+
+    /**
+     * Gets the name of the axis
+     * @return a string name of the axis
+     */
+    public String getAxisName() {
+        return name;
+    }
+
+    /**
+     * Sets the name of the axis
+     * @param name 
+     */
+    public void setAxisName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Gets the value of the axis
+     * @return the int value of the axis
+     */
+    public int getValue() {
+        return value;
+    }
+
+    /**
+     * Checks and sets the value of the axis
+     * @param value 
+     */
+    public void setValue(int value) {
+        this.value = this.checkValue(value);
+    }
+
+    /**
+     * Checks the value and returns a valid one
+     * @param value
+     * @return a valid value
+     */
+    private int checkValue(int value) {
+        if(value < this.min) {
+            return this.min;
+        }
+        
+        if(value > this.max) {
+            return this.max;
+        }
+        
+        return value;
+    }
+    
+    /**
+     * Gets the minimum value of the axis
+     * @return a int minimum value of the axis
+     */
+    public int getMin() {
+        return min;
+    }
+
+    /**
+     * Sets the minimum value of the axis
+     * @param min 
+     */
+    public void setMin(int min) {
+        this.min = min;
+    }
+
+    /**
+     * Gets the maximum value of the axis
+     * @return a int maximum value of the axis
+     */
+    public int getMax() {
+        return max;
+    }
+
+    /**
+     * Sets the maximum value of the axis
+     * @param max 
+     */
+    public void setMax(int max) {
+        this.max = max;
+    }
+    // </editor-fold>
 }
