@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pc_kiviat_radar_chart;
+package pc_kiviat_radar_chart.models;
 
 import javax.swing.table.AbstractTableModel;
 

@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pc_kiviat_radar_chart;
+package pc_kiviat_radar_chart.kiviatcomponent;
 
+import pc_kiviat_radar_chart.models.MyTableModel;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -20,11 +21,11 @@ import pc_kiviat_radar_chart.axiscomponent.AxisComponent;
  * radar chart representation of a table.
  * @author rooty
  */
-public final class RadarChartComponent extends JComponent {
+public final class KiviatComponent extends JComponent {
     
     private final ArrayList<AxisComponent> axes = new ArrayList<>();
     
-    public RadarChartComponent (MyTableModel data) {
+    public KiviatComponent (MyTableModel data) {
         int dataRealSize = 0;
          
         for (int i = 0; i < data.getRowCount() ; i++) {

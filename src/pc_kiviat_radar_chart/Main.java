@@ -5,6 +5,9 @@
  */
 package pc_kiviat_radar_chart;
 
+import pc_kiviat_radar_chart.kiviatcomponent.KiviatComponent;
+import pc_kiviat_radar_chart.models.MyTableModel;
+
 /**
  *
  * @author rooty
@@ -24,7 +27,7 @@ public class Main extends javax.swing.JFrame {
         MyTableModel data = new MyTableModel();
         jTableKiviat.setModel(data);
         jTableKiviat.getTableHeader().setReorderingAllowed(false);
-        RadarChartComponent radar = new RadarChartComponent(data);
+        KiviatComponent radar = new KiviatComponent(data);
         jPanelKiviat.add(radar);
     }
 
