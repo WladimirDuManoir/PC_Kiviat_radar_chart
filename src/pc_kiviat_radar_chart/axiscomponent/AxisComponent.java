@@ -159,8 +159,8 @@ public class AxisComponent extends JComponent {
         // Painting the point representing the value
         double distpoint =  dist*(value-min)/(max-min);
         point = new Ellipse2D.Double(
-                    getValueCoordinates().x, 
-                    getValueCoordinates().y,
+                    getValueCoordinates().x - DEFAULT_POINT_SIZE/2, 
+                    getValueCoordinates().y - DEFAULT_POINT_SIZE/2,
                     DEFAULT_POINT_SIZE, DEFAULT_POINT_SIZE); 
         
         if(hover) {
@@ -209,8 +209,8 @@ public class AxisComponent extends JComponent {
      */
     public Point getValueCoordinates() {
         int value = (int) model.getValueAt(rowIndex, 1);
-        return new Point((int) valueToPoint(value).x - DEFAULT_POINT_SIZE/2,
-                (int) valueToPoint(value).y - DEFAULT_POINT_SIZE/2);
+        return new Point((int) valueToPoint(value).x,
+                (int) valueToPoint(value).y);
     }  
     
     /**
