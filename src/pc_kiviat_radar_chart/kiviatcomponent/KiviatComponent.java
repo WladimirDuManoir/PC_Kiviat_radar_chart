@@ -200,7 +200,6 @@ public final class KiviatComponent extends JComponent {
 
         @Override
         public void axisChanged(AxisEvent e) {
-            
             int row = axes.indexOf(e.getAxis());
             
             switch(e.getType()) {
@@ -209,6 +208,7 @@ public final class KiviatComponent extends JComponent {
                     break;
                 case AxisEvent.VALUE_CHANGED :
                     model.setValueAt(axes.get(row).getValue(), row, 1); 
+                    System.out.println("Value changed : " + axes.get(row).getValue());
                     break;
                 case AxisEvent.MIN_CHANGED :
                     model.setValueAt(axes.get(row).getMin(), row, 2);

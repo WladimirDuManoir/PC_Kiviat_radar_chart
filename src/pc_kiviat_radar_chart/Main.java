@@ -141,13 +141,8 @@ public class Main extends javax.swing.JFrame {
 
     private void jButtonAddRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddRowActionPerformed
         Object[] defaultRow = new Object[]{"Default", 5, 0, 10};
-        Vector row = new Vector();
-        row.add("Default");
-        row.add(5);
-        row.add(0);
-        row.add(10);
         
-        this.model.addRow(row);
+        this.model.addRow(defaultRow);
     }//GEN-LAST:event_jButtonAddRowActionPerformed
 
     /**

@@ -42,12 +42,12 @@ public class AxisComponent extends JComponent {
     /**
      * Default space needed to print label
      */
-    private static final int DEFAULT_LABEL_SIZE = 25;
+    private static final int DEFAULT_LABEL_SIZE = 60;
     
     /**
      * Default space needed in the center to see points better
      */
-    private static final int DEFAULT_CENTER_SIZE = 20;
+    private static final int DEFAULT_CENTER_SIZE = 10;
     // </editor-fold>
     
     
@@ -163,8 +163,10 @@ public class AxisComponent extends JComponent {
         // Painting the axis
         double centerX = getWidth()/2;
         double centerY = getHeight()/2;
-        double dist = (getWidth()/2) - DEFAULT_LABEL_SIZE ;
-        line = new Line2D.Double(centerX, centerY, 
+        double dist = (getWidth()/2) + DEFAULT_CENTER_SIZE - DEFAULT_LABEL_SIZE ;
+        line = new Line2D.Double(
+                centerX, 
+                centerY, 
                 centerX + dist*Math.cos(angle),
                 centerY + dist*Math.sin(angle));
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -173,7 +175,6 @@ public class AxisComponent extends JComponent {
         g2.draw(line);
         
         // Painting the point representing the value
-        double distpoint =  dist*(value-min)/(max-min);
         point = new Ellipse2D.Double(
                     getValueCoordinates().x - DEFAULT_POINT_SIZE/2, 
                     getValueCoordinates().y - DEFAULT_POINT_SIZE/2,
@@ -188,10 +189,10 @@ public class AxisComponent extends JComponent {
         g2.fill(point);
         
         // Painting the name of the axis
-        double totaldist = getWidth()/2;
+        double totaldist = DEFAULT_CENTER_SIZE + (getWidth() - DEFAULT_LABEL_SIZE)/2;
         g2.setColor(Color.BLACK);
         g2.drawString(name, 
-                (float) (centerX - (g.getFontMetrics().stringWidth(name)/2) + totaldist*Math.cos(angle)), 
+                (float) (centerX  - (g.getFontMetrics().stringWidth(name)/2) + totaldist*Math.cos(angle)), 
                 (float) (centerY + totaldist*Math.sin(angle)));
         
         // Painting the value if hovered
@@ -258,7 +259,7 @@ public class AxisComponent extends JComponent {
     private Point2D.Double valueToPoint(int value) {
         int centerX = getWidth()/2;
         int centerY = getHeight()/2;
-        int distpoint = ((getWidth()/2) - DEFAULT_LABEL_SIZE)*(value-min)/(max-min);
+        int distpoint = DEFAULT_CENTER_SIZE  + ((getWidth()/2) - DEFAULT_LABEL_SIZE)*(value-min)/(max-min);
         
         Point2D.Double retour = new Point2D.Double(
             centerX + distpoint*Math.cos(angle),
