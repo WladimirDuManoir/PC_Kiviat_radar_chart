@@ -72,7 +72,6 @@ public class MyTableModel extends DefaultTableModel {
 
     @Override
     public void setValueAt(Object value, int row, int col) {
-        System.out.println("Valeur : " + value);
         super.setValueAt(checkValue(value, row, col), row, col);
         fireTableCellUpdated(row, col);
     }

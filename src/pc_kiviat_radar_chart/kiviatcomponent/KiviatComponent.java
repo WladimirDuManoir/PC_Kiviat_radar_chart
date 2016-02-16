@@ -208,7 +208,6 @@ public final class KiviatComponent extends JComponent {
                     break;
                 case AxisEvent.VALUE_CHANGED :
                     model.setValueAt(axes.get(row).getValue(), row, 1); 
-                    System.out.println("Value changed : " + axes.get(row).getValue());
                     break;
                 case AxisEvent.MIN_CHANGED :
                     model.setValueAt(axes.get(row).getMin(), row, 2);
