@@ -47,7 +47,12 @@ public class AxisComponent extends JComponent {
     /**
      * Default space needed in the center to see points better
      */
-    private static final int DEFAULT_CENTER_SIZE = 10;
+    private static final int DEFAULT_CENTER_SIZE = 15;
+    
+    /**
+     * Size for the hitbox on the line
+     */
+    private static final int DEFAULT_HITBOX_SIZE = 2;
     // </editor-fold>
     
     
@@ -108,7 +113,18 @@ public class AxisComponent extends JComponent {
         }
 
         @Override
-        public void mouseClicked(MouseEvent e) { }
+        public void mouseClicked(MouseEvent e) { 
+            
+            // Setting the new value
+            int value = pointToValue(approximatePoint(e.getX(), e.getY()));
+            
+            setValue(value);
+            repaint();
+            
+            // Telling the listeners that value changed
+            AxisEvent event = new AxisEvent(this, AxisComponent.this, AxisEvent.VALUE_CHANGED);
+            fireAxisChanged(event);
+        }
 
         @Override
         public void mousePressed(MouseEvent e) { }
@@ -212,8 +228,15 @@ public class AxisComponent extends JComponent {
     // TODO : this is not working to detect if user is clicking on the axis
     @Override
     public boolean contains(int x, int y) {
-        return point != null && line != null
-                && (point.contains(x, y) || line.contains(x, y));
+        int boxX = x - DEFAULT_HITBOX_SIZE / 2;
+        int boxY = y - DEFAULT_HITBOX_SIZE / 2;
+
+        int width = DEFAULT_HITBOX_SIZE;
+        int height = DEFAULT_HITBOX_SIZE;
+
+        
+        return (line != null && line.intersects(boxX, boxY, width, height))
+                || cursorContains(x, y);
     }
     
     /**
