@@ -7,6 +7,7 @@ package pc_kiviat_radar_chart.axiscomponent;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -83,6 +84,20 @@ public class AxisComponent extends JComponent {
      */
     private boolean hover = false;
     // </editor-fold>
+    
+    /**
+     * Allows to create an axis component
+     */
+    public AxisComponent() {     
+        this.setAngle(0);     
+        this.setName("Default");     
+        this.setMax(10);     
+        this.setMin(0);     
+        this.setValue(5);
+        
+        this.addMouseListener(new AxisComponentMouseListener());
+        this.addMouseMotionListener(new AxisComponentMouseMotionListener());
+    }
     
     
     /**
@@ -220,12 +235,15 @@ public class AxisComponent extends JComponent {
     }
 
     @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(500, 500);
+    }
+    
+    @Override
     public void setBounds(int x, int y, int width, int height) {
         super.setBounds(0, 0, width, height);
     }
     
-    
-    // TODO : this is not working to detect if user is clicking on the axis
     @Override
     public boolean contains(int x, int y) {
         int boxX = x - DEFAULT_HITBOX_SIZE / 2;
@@ -236,19 +254,9 @@ public class AxisComponent extends JComponent {
 
         
         return (line != null && line.intersects(boxX, boxY, width, height))
-                || cursorContains(x, y);
+                || (point != null && point.contains(x, y));
     }
-    
-    /**
-     * Checks wether the point is on the cursor or not
-     * @param x
-     * @param y
-     * @return boolean
-     */
-    public boolean cursorContains(int x, int y) {
-        return point != null && point.contains(x, y);
-    }
-        
+  
     /**
      * Returns the coordinates of the value on this axis
      * @return a point

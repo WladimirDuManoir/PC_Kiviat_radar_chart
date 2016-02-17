@@ -1,3 +1,9 @@
 Manifest-Version: 1.0
 X-COMMENT: Main-Class will be added automatically by build
 
+
+Name: pc_kiviat_radar_chart.axiscomponent.AxisComponent.class
+Java-Bean: True
+
+Name: pc_kiviat_radar_chart.kiviatcomponent.KiviatComponent.class
+Java-Bean: True
