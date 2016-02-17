@@ -28,8 +28,15 @@ import pc_kiviat_radar_chart.axiscomponent.AxisListener;
  */
 public final class KiviatComponent extends JComponent {
 
+    /**
+     * List of the axes of the Kiviat
+     */
     private final ArrayList<AxisComponent> axes = new ArrayList<>();
-    private final DefaultTableModel model;
+    
+    /**
+     * Model of the Kiviat
+     */
+    private DefaultTableModel model;
 
     /**
      * The listener on the model events
@@ -42,44 +49,35 @@ public final class KiviatComponent extends JComponent {
     private final AxisListener axisListener = new KiviatAxisListener();
     
     /**
-     * 
-     * @param data 
+     * Sets the model and updates axis
+     * @param model 
      */
-    public KiviatComponent(DefaultTableModel data) {
-        this.model = data;
+    public void setModel(DefaultTableModel model) {
+        this.model = model;
         this.model.addTableModelListener(modelListener);
 
-        int dataRealSize = 0;
-
-        for (int i = 0; i < data.getRowCount(); i++) {
-            if (data.getValueAt(i, 0) != null
-                    && data.getValueAt(i, 1) != null
-                    && data.getValueAt(i, 2) != null
-                    && data.getValueAt(i, 3) != null) {
-                dataRealSize++;
-            }
+        for (int i = 0; i < this.model.getRowCount(); i++) {
+            AxisComponent axis = new AxisComponent(i * Math.toRadians(360) / this.model.getRowCount(),
+                (String) this.model.getValueAt(i, 0),
+                (int) this.model.getValueAt(i, 1),
+                (int) this.model.getValueAt(i, 2),
+                (int) this.model.getValueAt(i, 3));
+            this.addAxis(axis);
         }
-        Double angle = dataRealSize == 0 ? 0 : Math.toRadians(360) / dataRealSize;
-        int real = 0;
-        for (int i = 0; i < dataRealSize; i++) {
-            if (data.getValueAt(i, 0) != null
-                    && data.getValueAt(i, 1) != null
-                    && data.getValueAt(i, 2) != null
-                    && data.getValueAt(i, 3) != null) {
-                AxisComponent axis = new AxisComponent(real * angle,
-                        (String) data.getValueAt(i, 0),
-                        (int) data.getValueAt(i, 1),
-                        (int) data.getValueAt(i, 2),
-                        (int) data.getValueAt(i, 3));
-                axis.addAxisListener(axisListener);
-                axes.add(axis);
-
-                this.add(axes.get(real));
-                real++;
-            }
-        }
+        
+        repaint();
     }
-
+    
+    /**
+     * Adding an axis to the Kiviat
+     * @param axis 
+     */
+    private void addAxis(AxisComponent axis) {
+        axis.addAxisListener(axisListener);
+        this.add(axis);
+        axes.add(axis);
+    }
+    
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(500, 500);
@@ -95,7 +93,8 @@ public final class KiviatComponent extends JComponent {
 
     @Override
     public void paint(Graphics g) {
-
+        this.setBounds(this.getBounds());
+        
         // Drawing the lines between the points
         Polygon lines = new Polygon();
 
@@ -112,11 +111,13 @@ public final class KiviatComponent extends JComponent {
 
         g2.setColor(Color.BLACK);
         g2.draw(lines);
-
-        // Drawing the axes etc
         super.paint(g);
+        
     }
 
+    /**
+     * Custom TableModelListener to update axes
+     */
     private class KiviatTableModelListener implements TableModelListener {
 
         @Override
@@ -134,10 +135,29 @@ public final class KiviatComponent extends JComponent {
             }
         }
 
+        /**
+         * Removes deleted rows from the axes
+         * @param e 
+         */
         private void tableRowDeleted(TableModelEvent e) {
-            // TODO : delete the corresponding axis in the list
+            // Adding the axis
+            for (int i = e.getFirstRow(); i <= e.getLastRow(); i++) {
+                remove(axes.get(i));
+                axes.remove(i);
+            }
+            
+            // Updating angles
+            for(AxisComponent axis : axes) {
+                axis.setAngle(axes.indexOf(axis) * Math.toRadians(360) / axes.size());
+            }
+            
+            repaint();
         }
 
+        /**
+         * Inserts new rows in the axes
+         * @param e 
+         */
         private void tableRowInserted(TableModelEvent e) {
             // Adding the axis
             for (int i = e.getFirstRow(); i <= e.getLastRow(); i++) {
@@ -147,18 +167,15 @@ public final class KiviatComponent extends JComponent {
                         (int) model.getValueAt(i, 2),
                         (int) model.getValueAt(i, 3));
                 
-                newAxis.addAxisListener(axisListener);
-                axes.add(newAxis);
-                
-                newAxis.setBounds(getBounds());
-                add(newAxis);
+                addAxis(newAxis);
             }
             
             // Updating angles
             for(AxisComponent axis : axes) {
                 axis.setAngle(axes.indexOf(axis) * Math.toRadians(360) / axes.size());
-                axis.repaint();
             }
+            
+            repaint();
         }
 
         /**
@@ -196,6 +213,9 @@ public final class KiviatComponent extends JComponent {
         }
     }
 
+    /**
+     * Custom AxisListener to update model according to axes
+     */
     private class KiviatAxisListener implements AxisListener {
 
         @Override

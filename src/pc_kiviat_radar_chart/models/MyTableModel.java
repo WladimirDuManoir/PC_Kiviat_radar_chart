@@ -28,8 +28,8 @@ public class MyTableModel extends DefaultTableModel {
             {"sdgrg", 1, 0, 100},
             {"efficiergency", 4, -50, 6},
             {"buersgerty", 0, 0, 1000},
-            {"gdsfdfgfd", 40, 0, 1055555},
-            {"gdsfdfgfd", 40, 0, 1055555},
+            {"gdsfdfgfd", 4, 0, 10},
+            {"gdsfdfgfd", 40, 0, 50},
             {"gdsfdfgfd", 40, 0, 1055555},
             {"gdsfdfgfd", 40, 0, 1055555},
             {"gdsfdfgfd", 40, 0, 1055555},
@@ -52,7 +52,7 @@ public class MyTableModel extends DefaultTableModel {
             {"quagsdfgdfglity", 50, 0, 100}}};
     
     public MyTableModel() {
-        super(dataset[1], columnNames);
+        super(dataset[0], columnNames);
     }
 
     @Override
@@ -84,27 +84,43 @@ public class MyTableModel extends DefaultTableModel {
      * @param column is column of the table.
      * @return if the valid value to be inserted in the row, column cell.
      */
-    private int checkValue(Object data, int row, int column) {
+    private Object checkValue(Object data, int row, int column) {
         switch (column) {
             case 0: // Name
-                break;
+                if(!(data instanceof String)) {
+                    System.err.println("Error : Name not a string.");
+                    return getValueAt(row, 0);
+                }
+                
+                String nom = (String) data;
+                if(nom.length() > 10) {
+                    System.err.println("Error : Name too long.");
+                    return nom.substring(0, 10);
+                }
+                
+                if(nom.length() <= 0) {
+                    System.err.println("Error : Name too short.");
+                    return getValueAt(row, 0);
+                }
+                
+                return nom;
             case 1: // Value
                 if (data instanceof Integer) {
                     int value = (int) data;
                     if (getValueAt(row, 2) != null && value < (int) getValueAt(row, 2)) {
                         System.err.println("Error : Value too low. ");
-                        return (int) getValueAt(row, 2);
+                        return getValueAt(row, 2);
                     }
                     
                     if(getValueAt(row, 3) != null && value > (int) getValueAt(row, 3)) {
                         System.err.println("Error : Value too high. ");
-                        return (int) getValueAt(row, 3);
+                        return getValueAt(row, 3);
                     }
                     
-                    return value;
+                    return data;
                 } else {
                     System.err.println("Error : Value not an Integer. ");
-                    return (int) getValueAt(row, 1);
+                    return getValueAt(row, 1);
                 }
                 
             case 2: // Vmin
@@ -112,19 +128,19 @@ public class MyTableModel extends DefaultTableModel {
                     int value = (int) data;
                     if(getValueAt(row, 1) != null && value > (int) getValueAt(row, 1)) {
                         System.err.println("Error : Min higher than value");
-                        return (int) getValueAt(row, 1);
+                        return getValueAt(row, 1);
                     }
                     
                     if (getValueAt(row, 3) != null && value > (int) getValueAt(row, 3)) {
                         System.err.println("Error : Min higher than max. ");
-                        return (int) getValueAt(row, 3);
+                        return getValueAt(row, 3);
                     }
                     
-                    return value;
+                    return data;
                     
                 } else {
                     System.err.println("Error : Min not an Integer. ");
-                    return (int) getValueAt(row, 2);
+                    return getValueAt(row, 2);
                 }
                 
             case 3: // Vmax 
@@ -132,24 +148,24 @@ public class MyTableModel extends DefaultTableModel {
                     int value = (int) data;
                     if (getValueAt(row, 1) != null && value < (int) getValueAt(row, 1)) {
                         System.err.println("Error : Max lower than value. ");
-                        return (int) getValueAt(row, 1);
+                        return getValueAt(row, 1);
                     }
                     
                     if (getValueAt(row, 2) != null && value < (int) getValueAt(row, 2)) {
                         System.err.println("Error : Max lower than min. ");
-                        return (int) getValueAt(row, 2);
+                        return getValueAt(row, 2);
                     }
                     
                     return value;
                 } else {
                     System.err.println("Error : Max not an Integer. ");
-                    return (int) getValueAt(row, 3);
+                    return getValueAt(row, 3);
                 }
             default:
                 System.err.println("Error : in the column number. ");
                 break;
         }
         
-        return (int) getValueAt(row, 1);
+        return getValueAt(row, column);
     }
 }

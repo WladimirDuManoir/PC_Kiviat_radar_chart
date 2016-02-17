@@ -188,6 +188,7 @@ public class AxisComponent extends JComponent {
         
         g2.fill(point);
         
+        
         // Painting the name of the axis
         double totaldist = DEFAULT_CENTER_SIZE + (getWidth() - DEFAULT_LABEL_SIZE)/2;
         g2.setColor(Color.BLACK);
@@ -280,7 +281,7 @@ public class AxisComponent extends JComponent {
         // value = (max-min)*(x-x1)/(x2-x1)
         int calculatedValue;
         if(Math.cos(angle) == 0) {
-            calculatedValue = (int) ((max-min)*(coordinates.x - centerX));
+            calculatedValue = (int) ((max-min)*(coordinates.x - centerX)/dist);
         } else {
             calculatedValue = (int) ((max-min)*(coordinates.x - centerX)/(dist*Math.cos(angle)));
         }

@@ -5,7 +5,7 @@
  */
 package pc_kiviat_radar_chart;
 
-import java.util.Vector;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
 import pc_kiviat_radar_chart.kiviatcomponent.KiviatComponent;
 import pc_kiviat_radar_chart.models.MyTableModel;
@@ -19,7 +19,9 @@ public class Main extends javax.swing.JFrame {
     /**
      * 
      */
-    private DefaultTableModel model = new MyTableModel();
+    private final DefaultTableModel model = new MyTableModel();
+    
+    private KiviatComponent jPanelKiviat;
     
     
     /**
@@ -31,16 +33,19 @@ public class Main extends javax.swing.JFrame {
     }
     
     private void myInit() {
-        // FIXME delete default init 
+        jTableKiviat.getSelectionModel().addListSelectionListener((ListSelectionEvent event) -> {
+            jButtonRemoveRow.setEnabled(true);
+        });
         
         // Setting the table
         jTableKiviat.setModel(model);
         jTableKiviat.getTableHeader().setReorderingAllowed(false);
         
         // Setting the Kiviat
-        KiviatComponent radar = new KiviatComponent(model);
-        radar.setBounds(jPanelKiviat.getBounds());
-        jPanelKiviat.add(radar);
+        jPanelKiviat = new KiviatComponent();
+        jPanelKiviat.setModel(model);
+        jPanelKiviat.setBounds(0,0,500,500);
+        this.add(jPanelKiviat);
     }
 
     /**
@@ -52,12 +57,24 @@ public class Main extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        kiviatComponent2 = new pc_kiviat_radar_chart.kiviatcomponent.KiviatComponent();
         jLabelKiviat = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableKiviat = new javax.swing.JTable();
-        jPanelKiviat = new javax.swing.JPanel();
         jButtonAddRow = new javax.swing.JButton();
         jButtonRemoveRow = new javax.swing.JButton();
+        kiviatComponent1 = new pc_kiviat_radar_chart.kiviatcomponent.KiviatComponent();
+
+        javax.swing.GroupLayout kiviatComponent2Layout = new javax.swing.GroupLayout(kiviatComponent2);
+        kiviatComponent2.setLayout(kiviatComponent2Layout);
+        kiviatComponent2Layout.setHorizontalGroup(
+            kiviatComponent2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 500, Short.MAX_VALUE)
+        );
+        kiviatComponent2Layout.setVerticalGroup(
+            kiviatComponent2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 500, Short.MAX_VALUE)
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -77,19 +94,6 @@ public class Main extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTableKiviat);
 
-        jPanelKiviat.setBackground(new java.awt.Color(255, 255, 255));
-
-        javax.swing.GroupLayout jPanelKiviatLayout = new javax.swing.GroupLayout(jPanelKiviat);
-        jPanelKiviat.setLayout(jPanelKiviatLayout);
-        jPanelKiviatLayout.setHorizontalGroup(
-            jPanelKiviatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 533, Short.MAX_VALUE)
-        );
-        jPanelKiviatLayout.setVerticalGroup(
-            jPanelKiviatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
         jButtonAddRow.setText("Add a row");
         jButtonAddRow.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -99,6 +103,22 @@ public class Main extends javax.swing.JFrame {
 
         jButtonRemoveRow.setText("Remove row");
         jButtonRemoveRow.setEnabled(false);
+        jButtonRemoveRow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRemoveRowActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout kiviatComponent1Layout = new javax.swing.GroupLayout(kiviatComponent1);
+        kiviatComponent1.setLayout(kiviatComponent1Layout);
+        kiviatComponent1Layout.setHorizontalGroup(
+            kiviatComponent1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 500, Short.MAX_VALUE)
+        );
+        kiviatComponent1Layout.setVerticalGroup(
+            kiviatComponent1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -106,33 +126,33 @@ public class Main extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanelKiviat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(kiviatComponent1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 605, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 634, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabelKiviat)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButtonAddRow, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonRemoveRow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanelKiviat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabelKiviat)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 569, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButtonRemoveRow, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
-                            .addComponent(jButtonAddRow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jButtonRemoveRow, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                            .addComponent(jButtonAddRow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(kiviatComponent1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -144,6 +164,11 @@ public class Main extends javax.swing.JFrame {
         
         this.model.addRow(defaultRow);
     }//GEN-LAST:event_jButtonAddRowActionPerformed
+
+    private void jButtonRemoveRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRemoveRowActionPerformed
+        this.model.removeRow(jTableKiviat.getSelectedRow());
+        jButtonRemoveRow.setEnabled(false);
+    }//GEN-LAST:event_jButtonRemoveRowActionPerformed
 
     /**
      * @param args the command line arguments
@@ -173,10 +198,8 @@ public class Main extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Main().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new Main().setVisible(true);
         });
     }
 
@@ -184,8 +207,9 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton jButtonAddRow;
     private javax.swing.JButton jButtonRemoveRow;
     private javax.swing.JLabel jLabelKiviat;
-    private javax.swing.JPanel jPanelKiviat;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableKiviat;
+    private pc_kiviat_radar_chart.kiviatcomponent.KiviatComponent kiviatComponent1;
+    private pc_kiviat_radar_chart.kiviatcomponent.KiviatComponent kiviatComponent2;
     // End of variables declaration//GEN-END:variables
 }
