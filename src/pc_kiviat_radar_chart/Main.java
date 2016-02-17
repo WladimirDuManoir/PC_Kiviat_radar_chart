@@ -19,7 +19,7 @@ public class Main extends javax.swing.JFrame {
     /**
      * 
      */
-    private final DefaultTableModel model = new MyTableModel();
+    private final DefaultTableModel model = new MyTableModel(0);
     
     private KiviatComponent jPanelKiviat;
     
