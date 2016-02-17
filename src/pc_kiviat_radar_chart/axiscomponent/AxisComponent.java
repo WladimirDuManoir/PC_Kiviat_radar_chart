@@ -161,14 +161,12 @@ public class AxisComponent extends JComponent {
         Graphics2D g2 = (Graphics2D) g;
                         
         // Painting the axis
-        double centerX = getWidth()/2;
-        double centerY = getHeight()/2;
         double dist = (getWidth()/2) + DEFAULT_CENTER_SIZE - DEFAULT_LABEL_SIZE ;
         line = new Line2D.Double(
-                centerX, 
-                centerY, 
-                centerX + dist*Math.cos(angle),
-                centerY + dist*Math.sin(angle));
+                getCenterPoint().x, 
+                getCenterPoint().y, 
+                valueToPoint(max).x,
+                valueToPoint(max).y);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setStroke(new BasicStroke(1));
         g2.setColor(Color.BLACK);
@@ -193,8 +191,8 @@ public class AxisComponent extends JComponent {
         double totaldist = DEFAULT_CENTER_SIZE + (getWidth() - DEFAULT_LABEL_SIZE)/2;
         g2.setColor(Color.BLACK);
         g2.drawString(name, 
-                (float) (centerX  - (g.getFontMetrics().stringWidth(name)/2) + totaldist*Math.cos(angle)), 
-                (float) (centerY + totaldist*Math.sin(angle)));
+                (float) (getCenterPoint().x  - (g.getFontMetrics().stringWidth(name)/2) + totaldist*Math.cos(angle)), 
+                (float) (getCenterPoint().y + totaldist*Math.sin(angle)));
         
         // Painting the value if hovered
         if(hover) {
@@ -253,18 +251,23 @@ public class AxisComponent extends JComponent {
      * ***********************************************************/ 
     // <editor-fold defaultstate="collapsed" desc="Building methods">
     /**
+     * Gets the value of the center point
+     */
+    private Point getCenterPoint() {
+        return new Point(getWidth()/2, getHeight()/2);
+    }
+    
+    /**
      * Gets the value of the axis and returns the corresponding point
      * @param value
      * @return a point containing the coordinates
      */
     private Point2D.Double valueToPoint(int value) {
-        int centerX = getWidth()/2;
-        int centerY = getHeight()/2;
         int distpoint = DEFAULT_CENTER_SIZE  + ((getWidth()/2) - DEFAULT_LABEL_SIZE)*(value-min)/(max-min);
         
         Point2D.Double retour = new Point2D.Double(
-            centerX + distpoint*Math.cos(angle),
-            centerY + distpoint*Math.sin(angle));  
+            getCenterPoint().x + distpoint*Math.cos(angle),
+            getCenterPoint().y  + distpoint*Math.sin(angle));  
         
         return retour;
     }
@@ -275,18 +278,17 @@ public class AxisComponent extends JComponent {
      * @return 
      */
     private int pointToValue(Point2D.Double coordinates) {
-        int centerX = getWidth()/2;
-        int centerY = getHeight()/2;
         double dist = (getWidth()/2) - DEFAULT_LABEL_SIZE;
         
-        // value = (max-min)*(x-x1)/(x2-x1)
-        int valueX = (int) ((max-min)*(coordinates.x - centerX)/(dist*Math.cos(angle)));
-        int valueY = (int) ((max-min)*(coordinates.y - centerY)/(dist*Math.sin(angle)));
+        int valueX = (int) ((max + Math.abs(min))*(coordinates.x - getCenterPoint().x)/(dist*Math.cos(angle)));
+        int valueY = (int) ((max + Math.abs(min))*(coordinates.y - getCenterPoint().y)/(dist*Math.sin(angle)));
 
         // In case cos(angle) = 0, use the sin(angle)
         if(valueX == 0 && valueX != valueY) {
             valueX = valueY;
         }
+        
+        valueX -= Math.abs(min);
         
         return valueX;
     }
