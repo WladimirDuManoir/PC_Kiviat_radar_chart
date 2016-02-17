@@ -207,8 +207,7 @@ public class AxisComponent extends JComponent {
 
     @Override
     public void setBounds(int x, int y, int width, int height) {
-        // FIXME : décallage entre le point et la ligne
-        super.setBounds(0, 0, width, height); //To change body of generated methods, choose Tools | Templates.
+        super.setBounds(0, 0, width, height);
     }
     
     
@@ -234,7 +233,8 @@ public class AxisComponent extends JComponent {
      * @return a point
      */
     public Point getValueCoordinates() {
-        return new Point((int) valueToPoint(value).x,
+        return new Point(
+                (int) valueToPoint(value).x,
                 (int) valueToPoint(value).y);
     }  
     
@@ -276,17 +276,19 @@ public class AxisComponent extends JComponent {
      */
     private int pointToValue(Point2D.Double coordinates) {
         int centerX = getWidth()/2;
+        int centerY = getHeight()/2;
         double dist = (getWidth()/2) - DEFAULT_LABEL_SIZE;
         
         // value = (max-min)*(x-x1)/(x2-x1)
-        int calculatedValue;
-        if(Math.cos(angle) == 0) {
-            calculatedValue = (int) ((max-min)*(coordinates.x - centerX)/dist);
-        } else {
-            calculatedValue = (int) ((max-min)*(coordinates.x - centerX)/(dist*Math.cos(angle)));
+        int valueX = (int) ((max-min)*(coordinates.x - centerX)/(dist*Math.cos(angle)));
+        int valueY = (int) ((max-min)*(coordinates.y - centerY)/(dist*Math.sin(angle)));
+
+        // In case cos(angle) = 0, use the sin(angle)
+        if(valueX == 0 && valueX != valueY) {
+            valueX = valueY;
         }
         
-        return calculatedValue;
+        return valueX;
     }
     
     /**

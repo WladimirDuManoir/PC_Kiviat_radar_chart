@@ -82,7 +82,7 @@ public class MyTableModel extends DefaultTableModel {
      * Checks values and initialises a Table Model with the specified model
      * @param number
      */
-    public MyTableModel(int number) {
+    public MyTableModel(int number) {      
         super(dataset[number], columnNames);
         
         for(int i = 0 ; i < this.getRowCount() ; i++) {
