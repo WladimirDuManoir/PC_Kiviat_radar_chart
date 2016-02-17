@@ -24,7 +24,7 @@ import javax.swing.event.EventListenerList;
 /**
  * Cette classe est un composant slider orienté sur un angle précisé
  * On peut contrôler sa valeur directement
- * @author bouillys
+ * @author Yseult Bouillon
  */
 public class AxisComponent extends JComponent {
     

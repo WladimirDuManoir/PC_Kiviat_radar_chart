@@ -11,8 +11,8 @@ import pc_kiviat_radar_chart.kiviatcomponent.KiviatComponent;
 import pc_kiviat_radar_chart.models.MyTableModel;
 
 /**
- *
- * @author rooty
+ * Main class that implements Kiviat with basic model
+ * @author Wladimir Dumanoir
  */
 public class Main extends javax.swing.JFrame {
 
